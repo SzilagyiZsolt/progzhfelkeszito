@@ -1,0 +1,182 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <map>
+#include <cctype>   
+#include <limits>
+
+using namespace std;
+
+//1. feladat
+//Írjon függvényt amelynek két paramétere van a visszatérési értéke, pedig a két szám lkkt-je.
+int lnko(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+int lkkt(int a, int b) {
+    if (a == 0 || b == 0) return 0;
+    return abs(a / lnko(a, b)) * b;
+}
+//2. feladat
+//Írjon függvényt amelynek egy 3x3-as tömb kétdimenziós tömb a paramétere és visszaadja a soronkénti maximum és minimum különbségét egy
+//3 méretű tömbben.
+vector<int> soronkentiKulonbseg(int tomb[3][3]) {
+    vector<int> eredmeny(3);
+
+    for (int i = 0; i < 3; i++) {
+        int sorMax = tomb[i][0];
+        int sorMin = tomb[i][0];
+
+        for (int j = 1; j < 3; j++) {
+            if (tomb[i][j] > sorMax) sorMax = tomb[i][j];
+            if (tomb[i][j] < sorMin) sorMin = tomb[i][j];
+        }
+
+        eredmeny[i] = sorMax - sorMin;
+    }
+
+    return eredmeny;
+}
+
+//3. feladat
+//Írjon függvényt amelynek 3 integer paramétere van(a,b,c). A legkiseb és a legnagyobb értéket írja felül 0-ra, majd cserélje meg az (a) és (c), majd a (b) és (a)
+//változók értékét. A függvény visszatérési értéke void. (a<c, b>a). A cserék utáni állapotot a main függvényben írja ki.
+void muvelet(int &a, int &b, int &c) {
+    // 1. Megkeressük az eredeti legkisebb és legnagyobb értéket
+    int legkisebb = min({a, b, c});
+    int legnagyobb = max({a, b, c});
+
+    // Segédváltozók az eredeti értékek megőrzéséhez a nullázás idejére
+    int origA = a, origB = b, origC = c;
+
+    // 2. A legkisebb és legnagyobb értékeket felülírjuk 0-ra
+    if (origA == legkisebb || origA == legnagyobb) a = 0;
+    if (origB == legkisebb || origB == legnagyobb) b = 0;
+    if (origC == legkisebb || origC == legnagyobb) c = 0;
+
+    // 3. Megcseréljük az (a) és (c) értékét
+    int temp = a;
+    a = c;
+    c = temp;
+
+    // 4. Megcseréljük a (b) és (a) értékét
+    temp = b;
+    b = a;
+    a = temp;
+}
+
+//4. feladat
+//Hozzon létre strukturát Banan néven, amelynek van súlya, minősége("A" vagy "B"), egy bool adattagja, amely jelzi, hogy bio-e. TÖltsön fel egy 5 méretű tömböt
+//banánokkal. Rendezze a tömböt súly szerint.
+struct Banan {
+    double suly;    // Súly (grammban vagy kilóban)
+    char minoseg;   // 'A' vagy 'B'
+    bool isBio;     // Bio-e vagy sem
+};
+
+int main() {
+    //1. feladat
+    int x = 12, y = 18;
+    cout << x << " es " << y << " LKKT-je: " << lkkt(x, y) << endl;
+
+
+    //2. feladat
+    int matrix[3][3] = {
+        {15, 5, 8},  // Max: 15, Min: 5 -> Különbség: 10
+        {10, 20, 30}, // Max: 30, Min: 10 -> Különbség: 20
+        {4, 9, 2}     // Max: 9, Min: 2 -> Különbség: 7
+    };
+
+    vector<int> kulonbsegek = soronkentiKulonbseg(matrix);
+
+    cout << "A soronkenti kulonbsegek: ";
+    for (int i = 0; i < 3; i++) {
+        cout << kulonbsegek[i] << " ";
+    }
+    cout << endl;
+
+
+    //3. feladat
+    int a = 2, b = 10, c = 5;
+    cout << "Eredeti allapot: " << "a=" << a << ", b=" << b << ", c=" << c << endl;
+    muvelet(a, b, c);
+    cout << "Modositott allapot: " << "a=" << a << ", b=" << b << ", c=" << c << endl;
+
+
+    //4. feladat
+    Banan bananok[5] = {
+        {150.5, 'A', true},
+        {120.0, 'B', false},
+        {200.2, 'A', false},
+        {180.8, 'B', true},
+        {110.3, 'A', true}
+    };
+
+    sort(bananok, bananok + 5, [](const Banan& a, const Banan& b) {
+        return a.suly < b.suly;
+    });
+
+    cout << "Bananok sulya szerint rendezve:" << endl;
+    cout << "-------------------------------" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Suly: " << bananok[i].suly 
+             << "g | Minoseg: " << bananok[i].minoseg 
+             << " | Bio: " << (bananok[i].isBio ? "Igen" : "Nem") << endl;
+    }
+
+    //5. feladat
+    //Olvassa be a sorok.txt állományt egy tetszőleges adatszerkezetbe(vektor). 
+    //Írja ki a gyakori.txt-be a legritkábban előforduló betűt és számosságát, valamint a nagybetűk számát
+    ifstream bemenet("sorok.txt");
+    if (!bemenet.is_open()) {
+        cerr << "Hiba: A sorok.txt nem talalhato!" << endl;
+        return 1;
+    }
+
+    vector<string> adatok;
+    string sor;
+    while (getline(bemenet, sor)) {
+        adatok.push_back(sor);
+    }
+    bemenet.close();
+
+    map<char, int> gyakorisag;
+    int nagybetuDB = 0;
+
+    for (const string& s : adatok) {
+        for (char c : s) {
+            if (isupper(c)) {
+                nagybetuDB++;
+            }
+            gyakorisag[c]++;
+        }
+    }
+
+    char ritkaChar = ' ';
+    int minGyakorisag = numeric_limits<int>::max();
+
+    for (auto const& [karakter, db] : gyakorisag) {
+        if (db < minGyakorisag) {
+            minGyakorisag = db;
+            ritkaChar = karakter;
+        }
+    }
+
+    ofstream kimenet("gyakori.txt");
+    if (kimenet.is_open()) {
+        kimenet << "Legritkabb karakter: '" << ritkaChar << "' (szamossaga: " << minGyakorisag << ")" << endl;
+        kimenet << "Nagybetuk szama: " << nagybetuDB << endl;
+        kimenet.close();
+        cout << "A statisztika elkeszult a gyakori.txt-ben!" << endl;
+    } else {
+        cerr << "Hiba: Nem sikerult letrehozni a gyakori.txt-t!" << endl;
+    }
+
+}
