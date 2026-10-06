@@ -1,0 +1,46 @@
+body{
+    background-color: floralwhite;
+}
+
+table{
+    border-collapse: collapse;
+    box-shadow: 0 0 0.1em;
+    margin: 2em auto;
+}
+
+table :is(th,td){
+    border: thin solid black;
+    padding: 1em;
+}
+
+table > thead th{
+    background-color: burlywood;
+    font-size: 125%;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+}
+
+table > tbody :is(th, td){
+    text-align: left;
+    vertical-align: middle;
+}
+
+table td[colspan]{
+    background-color: cornsilk;
+    letter-spacing: 0.2em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+table > tbody td:not([colspan]){
+    transition-property: background-color, outline, transform;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+
+    &:hover{
+        background-color: moccasin;
+        outline: 0.5em solid goldenrod;
+        outline-offset: -0.5em;
+        transform: scale(1.05);
+    }
+}

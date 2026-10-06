@@ -1,0 +1,37 @@
+table{
+    border-collapse: collapse;
+    margin: 1em auto;
+}
+
+table > tbody > tr:nth-child(even) > td:nth-of-type(odd),
+table > tbody > tr:nth-child(odd) > td:nth-of-type(even){
+    background-color: lightgray;
+}
+
+table td, table th{
+    font-size: 2rem;
+    height: 4rem;
+    width: 4rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table > tbody > tr:first-child > td{
+    border-top: medium solid black;
+}
+
+table > tbody > tr:last-child > td{
+    border-bottom: medium solid black;
+}
+
+table > tbody > tr > td:first-of-type{
+    border-left: medium solid black;
+}
+
+table > tbody > tr > td:last-of-type{
+    border-right: medium solid black;
+}
+
+table > tbody > tr > td:hover{
+    background-color: salmon !important;
+}
